@@ -22,7 +22,7 @@
   <label>Destination:</label>
   <input type="text" id="destination" />
   <br>
-  <label>Milage:</label>
+  <label>km/L</label>
   <input type="text" id="milage" />
   <br>
   <button id="submit">calculate cost</button>
@@ -41,6 +41,7 @@
 
   let costPerLitre = 2.3;
   let distance;
+  let distanceText;
 
   // Google stuff
   var map;
@@ -119,7 +120,8 @@
               for (var j = 0; j < results.length; j++) {
                 geocoder.geocode({'address': destinationList[j]},
                     showGeocodedAddressOnMap(true));
-                distance = results[j].distance.value;                    
+                distance = results[j].distance.value;
+                distanceText = results[j].distance.text;                    
               }
             }
           }});
@@ -128,13 +130,13 @@
 
 
   function getCost(){
-     let litres = milage.value *  getDistance();
+     let litres = (getDistance() / 1000) / milage.value;
 
      return (litres * costPerLitre).toFixed(2);
   }
 
   function values(){
-    return ("<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + distance + "</p>");
+    return ("<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + distanceText + "</p>");
   }
 
   function setOutput() {
@@ -142,14 +144,16 @@
   }
 
   function waitDist() {
-    getDistance();
     if (distance == null) {
-      setTimeout(setOutput,1000);
+      setTimeout(waitDist,50);
+    } else {
+      setOutput();
     }
   }
 
 
   submit.onclick = () => {
+    getDistance();
     waitDist();
   };
 
