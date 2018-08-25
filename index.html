@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+  <h1>Roadie</h1>
+  <input type="text" id="start" />
+  <input type="text" id="destination" />
+  <input type="text" id="milage" />
+
+  <button id="submit">calculate cost</button>
+  <p id="output">
+     output
+  </p>
+
+<script>
+  const start = document.getElementById("start");
+  const dest = document.getElementById("destination");
+  const milage = document.getElementById("milage");
+  const output = document.getElementById("output");
+  const submit = document.getElementById("submit");
+
+  let costPerLitre = 2.3;
+
+  function getDistance (start, dest) {
+    return 100;
+  }
+
+  function getCost(){
+     let litres = milage.value *  getDistance();
+
+     return (litres * costPerLitre).toFixed(2);
+  }
+
+  function values(){
+    return "<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + getDistance() + "</p>";
+  }
+
+
+  submit.onclick = () => {
+    output.innerHTML = values();
+  };
+
+
+
+</script>
+</body>
+</html>
