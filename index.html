@@ -123,16 +123,9 @@
               }
             }
           }});
-    return distance;
+          return distance;
   }
 
-  function waitDistance () {
-    return new Promise( resolve => {
-      setTimeout(() => {
-        resolve(getDistance());
-      })
-    });
-  }
 
   function getCost(){
      let litres = milage.value *  getDistance();
@@ -140,15 +133,24 @@
      return (litres * costPerLitre).toFixed(2);
   }
 
-  async function values(){
-    var distOne = await getDistance();
-    console.log(distOne);
-    return await ("<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + distOne + "</p>");
+  function values(){
+    return ("<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + distance + "</p>");
+  }
+
+  function setOutput() {
+    output.innerHTML = values();
+  }
+
+  function waitDist() {
+    getDistance();
+    if (distance == null) {
+      setTimeout(setOutput,1000);
+    }
   }
 
 
-  submit.onclick = async () => {
-    output.innerHTML = await values();
+  submit.onclick = () => {
+    waitDist();
   };
 
 </script>
