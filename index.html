@@ -1,30 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+    #map {
+      height: 50%;
+    }
+  </style>
 
 </head>
 <body>
   <h1>Roadie</h1>
+  <label>Origin:</label>
   <input type="text" id="start" />
+  <br>
+  <label>Destination:</label>
   <input type="text" id="destination" />
+  <br>
+  <label>Milage:</label>
   <input type="text" id="milage" />
-
+  <br>
   <button id="submit">calculate cost</button>
-  <p id="output">
-     output
-  </p>
+  <div id='output'></div>
+  <br>
+  <div id='map'></div>
 
 <script>
   const start = document.getElementById("start");
   const dest = document.getElementById("destination");
+  //const start = "Wellington, NZ";
+  //const dest = "Auckland, NZ";
   const milage = document.getElementById("milage");
   const output = document.getElementById("output");
   const submit = document.getElementById("submit");
 
   let costPerLitre = 2.3;
+  let distance;
 
-  function getDistance (start, dest) {
-    return 100;
+  // Google stuff
+  var map;
+  var service;
+  var geocoder;
+  var acStart;
+  var acDest;
+  var bounds;
+  var markersArray = [];
+
+  var destinationIcon = 'https://chart.googleapis.com/chart?' +
+      'chst=d_map_pin_letter&chld=D|FF0000|000000';
+  var originIcon = 'https://chart.googleapis.com/chart?' +
+      'chst=d_map_pin_letter&chld=O|FFFF00|000000';
+
+  function initMap() {
+    bounds = new google.maps.LatLngBounds
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: -41.2865, lng: 174.7762},
+      zoom: 10
+    });
+    service = new google.maps.DistanceMatrixService;
+    geocoder = new google.maps.Geocoder;
+    var options = {
+      componentRestrictions: {country: 'nz'}
+    };
+    acStart = new google.maps.places.Autocomplete(start,options);
+    acDest = new google.maps.places.Autocomplete(dest,options);
+  }
+
+  function deleteMarkers(markersArray) {
+        for (var i = 0; i < markersArray.length; i++) {
+          markersArray[i].setMap(null);
+        }
+        markersArray = [];
+  }
+
+
+  function getDistance () {
+    service.getDistanceMatrix({
+          origins: [start.value],
+          destinations: [dest.value],
+          travelMode: 'DRIVING',
+          unitSystem: google.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false
+        }, function(response, status) {
+          if (status !== 'OK') {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+
+            deleteMarkers(markersArray);
+
+            var showGeocodedAddressOnMap = function(asDestination) {
+              var icon = asDestination ? destinationIcon : originIcon;
+              return function(results, status) {
+                if (status === 'OK') {
+                  map.fitBounds(bounds.extend(results[0].geometry.location));
+                  markersArray.push(new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    icon: icon
+                  }));
+                } else {
+                  alert('Geocode was not successful due to: ' + status);
+                }
+              };
+            };
+
+            for (var i = 0; i < originList.length; i++) {
+              var results = response.rows[i].elements;
+              geocoder.geocode({'address': originList[i]},
+                  showGeocodedAddressOnMap(false));
+              for (var j = 0; j < results.length; j++) {
+                geocoder.geocode({'address': destinationList[j]},
+                    showGeocodedAddressOnMap(true));
+                distance = results[j].distance.value;                    
+              }
+            }
+          }});
+    return distance;
+  }
+
+  function waitDistance () {
+    return new Promise( resolve => {
+      setTimeout(() => {
+        resolve(getDistance());
+      })
+    });
   }
 
   function getCost(){
@@ -33,17 +140,20 @@
      return (litres * costPerLitre).toFixed(2);
   }
 
-  function values(){
-    return "<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + getDistance() + "</p>";
+  async function values(){
+    var distOne = await getDistance();
+    console.log(distOne);
+    return await ("<p> Total cost: " + getCost() + "</p><p>Distance to Travel : " + distOne + "</p>");
   }
 
 
-  submit.onclick = () => {
-    output.innerHTML = values();
+  submit.onclick = async () => {
+    output.innerHTML = await values();
   };
 
-
-
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ_KrBDsSmofa4csc6YFAsxd8M3LHQyLg&libraries=places&callback=initMap">
 </script>
 </body>
 </html>
