@@ -21,6 +21,18 @@
   <br>
   <label>Destination:</label>
   <input type="text" id="destination" />
+
+  <ul class="segmented-control">
+    <li class="segmented-control__item">
+        <input class="segmented-control__input" type="radio" value="2" name="PetrolType" id="petrol" checked>
+        <label class="segmented-control__label" for="option-1">Petrol</label>
+    </li>
+    <li class="segmented-control__item">
+        <input class="segmented-control__input" type="radio" value="1" name="PetrolType" id="diesel" >
+        <label class="segmented-control__label" for="option-2">Diesel</label>
+    </li>
+</ul>
+
   <br>
   <label>km/L</label>
   <input type="text" id="milage" />
@@ -39,7 +51,7 @@
   const output = document.getElementById("output");
   const submit = document.getElementById("submit");
 
-  let costPerLitre = 2.3;
+//  var costPerLitre;
   let distanceOld;
   let distance;
   let distanceText;
@@ -133,7 +145,7 @@
                     showGeocodedAddressOnMap(false));
                 pointB = destinationList[j];
                 distance = results[j].distance.value;
-                distanceText = results[j].distance.text;                    
+                distanceText = results[j].distance.text;
               }
             }
           }});
@@ -158,8 +170,8 @@
 
   function getCost(){
      let litres = (getDistance() / 1000) / milage.value;
-
-     return (litres * costPerLitre).toFixed(2);
+     console.log(setCostPerLitre());
+     return (litres * setCostPerLitre()).toFixed(2);
   }
 
   function values(){
@@ -171,7 +183,7 @@
   }
 
   function waitDist() {
-    if (distance == distanceOld) {
+    if (distance == distanceOld ) {
       setTimeout(waitDist,50);
     } else {
       setOutput();
@@ -179,10 +191,32 @@
     }
   }
 
+  function setCostPerLitre()
+  {
+    //value of radio button selected
+    let costPerLitre;
+    if(document.getElementById("petrol").checked){
+      costPerLitre = 2;
+    }
+    if (document.getElementById("diesel").checked){
+      costPerLitre = 1;
+    }
+
+    return costPerLitre;
+    ///costPerLitre = document.getElementById("PetrolType").value;
+
+  //value of radio button selected
+  }
+
 
   submit.onclick = () => {
     getDistance();
+    getCost();
     waitDist();
+
+    //setCostPerLitre();
+
+
   };
 
 </script>
