@@ -15,16 +15,19 @@ p {
 }
 
 #map {
+  position: fixed !important;
+  top: 0;
+  left: 30%;
   height: 100%;
-    width: 70%;
-    float: right;
+  width: 70%;
 }
 
 .container {
+  position: absolute;
+  overflow: auto;
     width: 30%;
-    height: 150vh;
+
     border: 1px solid green;
-    position: fixed;
     z-index: 100;
     background-color: #FFF;
     padding: 20px;

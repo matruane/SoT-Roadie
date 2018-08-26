@@ -13,7 +13,7 @@
     <input type="text" id="destination" placeholder="End place" />
 
     <br>
-    <input type="text" id="milage" placeholder="Kilometers/Litre eg 9.2"/>
+    <input type="text" id="milage" placeholder="Car Number Plate"/>
 
     or
 
@@ -52,11 +52,11 @@
 
         <div class="info-container">
             <p class="info-header">Fuel type</p>
-            <p>Petrol</p><br>
+            <p id="fuel-type">Petrol</p><br>
         </div>
 
         <div class="info-container">
-            <p class="info-header">Petrol cost</p>
+            <p class="info-header">Fuel cost</p>
             <p id="costPerLitreOut">$-/L</p><br>
         </div>
 
@@ -212,27 +212,34 @@ function lookUpLicence(licence){
 
   function getTotalCost(milage, distance){
      let litres = (distance / 1000) / milage;
-     console.log(setCostPerLitre());
-     return (litres * setCostPerLitre()).toFixed(2);
+     return (litres * getCostPerLitre()).toFixed(2);
   }
 
-  function setOutput(cost) {
+  function setOutput(cost, milage) {
     estFuelCost.innerHTML = "$" + cost;
     tripDist.innerHTML = distanceText;
-    milageOut.innerHTML = milage.value + " km/L";
+    milageOut.innerHTML = milage + " km/L";
     costPerLitreOut.innerHTML = "$" + costPerLitre + "/L";
 
   }
 
+  function getSelectedFuelType() {
+    if(document.getElementById("petrol").checked){
+      return 'petrol';
+    }
+    if (document.getElementById("diesel").checked){
+      return 'diesel';
+    }
+  }
 
-  function setCostPerLitre()
+  function getCostPerLitre()
   {
     //value of radio button selected
     if(document.getElementById("petrol").checked){
-      costPerLitre = 2;
+      costPerLitre = 2.29;
     }
     if (document.getElementById("diesel").checked){
-      costPerLitre = 1;
+      costPerLitre = 1.64;
     }
 
     return costPerLitre;
@@ -243,6 +250,7 @@ function lookUpLicence(licence){
 
 
   submit.onclick = () => {
+    document.getElementById('fuel-type').innerText = getSelectedFuelType();
     const licence = licencePlateTextField.value;
     console.log(licence);
 
@@ -260,13 +268,9 @@ function lookUpLicence(licence){
         console.log('milage', milage)
         const totalCost = getTotalCost(milage, distance)
         console.log(totalCost);
-        setOutput(totalCost);
+        setOutput(totalCost, milage);
       })
     });
-
-    //setCostPerLitre();
-
-
   };
 });
 </script>
