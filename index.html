@@ -48,10 +48,14 @@
   var map;
   var service;
   var geocoder;
+  var directionsService;
+  var directionsDisplay;
   var acStart;
   var acDest;
   var bounds;
   var markersArray = [];
+  var pointA;
+  var pointB;
 
   var destinationIcon = 'https://chart.googleapis.com/chart?' +
       'chst=d_map_pin_letter&chld=D|FF0000|000000';
@@ -66,11 +70,15 @@
     });
     service = new google.maps.DistanceMatrixService;
     geocoder = new google.maps.Geocoder;
-    var options = {
+    directionsService = new google.maps.DirectionsService,
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      map: map
+    })
+    var acOptions = {
       componentRestrictions: {country: 'nz'}
     };
-    acStart = new google.maps.places.Autocomplete(start,options);
-    acDest = new google.maps.places.Autocomplete(dest,options);
+    acStart = new google.maps.places.Autocomplete(start,acOptions);
+    acDest = new google.maps.places.Autocomplete(dest,acOptions);
   }
 
   function deleteMarkers(markersArray) {
@@ -82,6 +90,7 @@
 
 
   function getDistance () {
+
     service.getDistanceMatrix({
           origins: [start.value],
           destinations: [dest.value],
@@ -103,11 +112,11 @@
               return function(results, status) {
                 if (status === 'OK') {
                   map.fitBounds(bounds.extend(results[0].geometry.location));
-                  markersArray.push(new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                    icon: icon
-                  }));
+                  // markersArray.push(new google.maps.Marker({
+                  //   map: map,
+                  //   position: results[0].geometry.location,
+                  //   icon: icon
+                  // }));
                 } else {
                   alert('Geocode was not successful due to: ' + status);
                 }
@@ -118,16 +127,33 @@
               var results = response.rows[i].elements;
               geocoder.geocode({'address': originList[i]},
                   showGeocodedAddressOnMap(false));
+              pointA = originList[i];
               for (var j = 0; j < results.length; j++) {
                 geocoder.geocode({'address': destinationList[j]},
-                    showGeocodedAddressOnMap(true));
+                    showGeocodedAddressOnMap(false));
+                pointB = destinationList[j];
                 distance = results[j].distance.value;
                 distanceText = results[j].distance.text;                    
               }
             }
           }});
+          calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
           return distance;
   }
+  
+  function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+  directionsService.route({
+    origin: pointA,
+    destination: pointB,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
 
   function getCost(){
