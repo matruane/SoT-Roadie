@@ -46,6 +46,11 @@
         </div>
 
         <div class="info-container">
+            <p class="info-header">Make</p>
+            <p id="car-make">--</p><br>
+        </div>
+
+        <div class="info-container">
             <p class="info-header">Fuel efficiency</p>
             <p id="milageOut">-- km/L</p><br>
         </div>
@@ -129,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const milageOut = document.getElementById("milageOut");
     const tripDist = document.getElementById("tripDist");
     const costPerLitreOut = document.getElementById("costPerLitreOut");
+    const carMakeOut = document.getElementById('car-make');
 
     const carSizeSelect = document.getElementById("car_size");
 
@@ -258,6 +264,7 @@ function lookUpLicence(licence){
       const licencePromise = licence ? lookUpLicence(licence) : Promise.resolve({});
 
       licencePromise.then(function (carData){
+        carMakeOut.innerText = carData.make || "unknown";
         console.log(carData);
         let milage;
         if (!carData.milage) {
