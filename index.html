@@ -1,33 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-
-    #map {
-      height: 50%;
-    }
-  </style>
-
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Roadie</h1>
-  <label>Origin:</label>
-  <input type="text" id="start" />
-  <br>
-  <label>Destination:</label>
-  <input type="text" id="destination" />
-  <br>
-  <label>km/L</label>
-  <input type="text" id="milage" />
-  <br>
-  <button id="submit">calculate cost</button>
-  <div id='output'></div>
-  <br>
+  <div class="container">
+    <h1>Roadie helps you figure out how much your road trip is going to cost, based on petrol prices</h1>
+    
+    <input type="text" id="start" placeholder="Start place" />
+    
+    <br>
+    <input type="text" id="destination" placeholder="End place" />
+    
+    <br>
+    <input type="text" id="milage" placeholder="Kilometers/Litre eg 9.2"/>
+    
+    or
+
+    <select>
+        <option value="9.3">Small car</option>
+        <option value="8">Big car/SUV</option>
+        <option value="7">Van/Truck</option>
+    </select>
+    
+    <ul class="segmented-control">
+    <li class="segmented-control__item">
+        <input class="segmented-control__input" type="radio" value="1" name="option" id="option-1" checked>
+        <label class="segmented-control__label" for="option-1">Petrol</label>
+    </li>
+    <li class="segmented-control__item">
+        <input class="segmented-control__input" type="radio" value="2" name="option" id="option-2" >
+        <label class="segmented-control__label" for="option-2">Diesel</label>
+    </li>
+</ul>
+    
+    <br>
+    <button id="submit">calculate cost</button>
+    <div id='output'></div>
+    <div class="output">
+        <h2>Estimated fuel price</h2>
+        <h3 id="estFuelCost">$--</h3>
+        <div class="info-container">
+            <p class="info-header">Trip distance</p>
+            <p id="tripDist">-- km</p><br>
+        </div>
+        
+        <div class="info-container">
+            <p class="info-header">Fuel efficiency</p>
+            <p id="milageOut">-- km/L</p><br>
+        </div>
+        
+        <div class="info-container">
+            <p class="info-header">Fuel type</p>
+            <p>Petrol</p><br>
+        </div>
+        
+        <div class="info-container">
+            <p class="info-header">Petrol cost</p>
+            <p>$2.3/L</p><br>
+        </div>
+    
+    
+    </div>
+    <br>
+</div>
+        
+        
   <div id='map'></div>
 
 <script>
@@ -38,6 +76,11 @@
   const milage = document.getElementById("milage");
   const output = document.getElementById("output");
   const submit = document.getElementById("submit");
+
+  // Results
+  const estFuelCost = document.getElementById("estFuelCost");
+  const milageOut = document.getElementById("milageOut");
+  const tripDist = document.getElementById("tripDist");
 
   let costPerLitre = 2.3;
   let distanceOld;
@@ -162,12 +205,11 @@
      return (litres * costPerLitre).toFixed(2);
   }
 
-  function values(){
-    return ("<p> Total cost: $" + getCost() + "</p><p>Distance to Travel : " + distanceText + "</p>");
-  }
-
   function setOutput() {
-    output.innerHTML = values();
+    estFuelCost.innerHTML = "$" + getCost();
+    tripDist.innerHTML = distanceText;
+    milageOut.innerHTML = milage.value + " km/L"
+
   }
 
   function waitDist() {

@@ -1,0 +1,128 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+p {
+    margin: 0px;
+}
+
+#map {
+  height: 100%;
+    width: 70%;
+    float: right;
+}
+
+.container {
+    width: 30%;
+    height: 150vh;
+    border: 1px solid green;
+    position: fixed;
+    z-index: 100;
+    background-color: #FFF;
+    padding: 20px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+#milage {
+    width: 50%;
+}
+
+input[type=text] {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.segmented-control {
+    display: table;
+    width: 100%;
+    margin: 2em 0;
+    padding: 0;
+}
+
+.segmented-control__item {
+    display: table-cell;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.segmented-control__input {
+    position: absolute;
+    visibility: hidden;
+}
+
+.segmented-control__label {
+    display: block;
+    margin: 0 -1px -1px 0; /* -1px margin removes double-thickness borders between items */
+    padding: 1em .25em;
+
+    border: 1px solid #ddd;
+
+    font: 14px/1.5 sans-serif; 
+    text-align: center;  
+
+    cursor: pointer;
+    
+    max-height: 20px;
+}
+
+.segmented-control__label:hover {
+    background: #fafafa;
+}
+
+.segmented-control__input:checked + .segmented-control__label {
+    background: #eee;
+    color: #333; 
+}
+
+
+button {
+    background-color: #318CB7;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 3px;
+}
+
+.output h2 {
+    font-size: 14px;
+    color: #FF0000;
+    font-weight: 500;
+}
+
+.output h3 {
+    font-size: 34px;
+    margin: 0px;
+}
+
+
+
+.output {
+    width: 100%;
+    border: 1px solid black;
+    margin-top: 30px;
+    padding: 20px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.info-header {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    color: #318CB7;
+}
