@@ -25,12 +25,12 @@
     
     <ul class="segmented-control">
     <li class="segmented-control__item">
-        <input class="segmented-control__input" type="radio" value="1" name="option" id="option-1" checked>
-        <label class="segmented-control__label" for="option-1">Petrol</label>
+        <input class="segmented-control__input" type="radio" value="1" name="option" id="petrol" checked>
+        <label class="segmented-control__label" for="petrol">Petrol</label>
     </li>
     <li class="segmented-control__item">
-        <input class="segmented-control__input" type="radio" value="2" name="option" id="option-2" >
-        <label class="segmented-control__label" for="option-2">Diesel</label>
+        <input class="segmented-control__input" type="radio" value="2" name="option" id="diesel" >
+        <label class="segmented-control__label" for="diesel">Diesel</label>
     </li>
 </ul>
     
@@ -57,7 +57,7 @@
         
         <div class="info-container">
             <p class="info-header">Petrol cost</p>
-            <p>$2.3/L</p><br>
+            <p id="costPerLitreOut">$-/L</p><br>
         </div>
     
     
@@ -81,6 +81,7 @@
   const estFuelCost = document.getElementById("estFuelCost");
   const milageOut = document.getElementById("milageOut");
   const tripDist = document.getElementById("tripDist");
+  const costPerLitreOut = document.getElementById("costPerLitreOut");
 
   let costPerLitre = 2.3;
   let distanceOld;
@@ -208,7 +209,8 @@
   function setOutput() {
     estFuelCost.innerHTML = "$" + getCost();
     tripDist.innerHTML = distanceText;
-    milageOut.innerHTML = milage.value + " km/L"
+    milageOut.innerHTML = milage.value + " km/L";
+    costPerLitreOut.innerHTML = "$" + costPerLitre + "/L";
 
   }
 
@@ -224,7 +226,6 @@
   function setCostPerLitre()
   {
     //value of radio button selected
-    let costPerLitre;
     if(document.getElementById("petrol").checked){
       costPerLitre = 2;
     }
