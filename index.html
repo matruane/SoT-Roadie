@@ -6,23 +6,23 @@
 <body>
   <div class="container">
     <h1>Roadie helps you figure out how much your road trip is going to cost, based on petrol prices</h1>
-    
+
     <input type="text" id="start" placeholder="Start place" />
-    
+
     <br>
     <input type="text" id="destination" placeholder="End place" />
-    
+
     <br>
     <input type="text" id="milage" placeholder="Kilometers/Litre eg 9.2"/>
-    
+
     or
 
-    <select>
+    <select id="car_size">
         <option value="9.3">Small car</option>
         <option value="8">Big car/SUV</option>
         <option value="7">Van/Truck</option>
     </select>
-    
+
     <ul class="segmented-control">
     <li class="segmented-control__item">
         <input class="segmented-control__input" type="radio" value="1" name="option" id="petrol" checked>
@@ -33,7 +33,7 @@
         <label class="segmented-control__label" for="diesel">Diesel</label>
     </li>
 </ul>
-    
+
     <br>
     <button id="submit">calculate cost</button>
     <div id='output'></div>
@@ -44,44 +44,31 @@
             <p class="info-header">Trip distance</p>
             <p id="tripDist">-- km</p><br>
         </div>
-        
+
         <div class="info-container">
             <p class="info-header">Fuel efficiency</p>
             <p id="milageOut">-- km/L</p><br>
         </div>
-        
+
         <div class="info-container">
             <p class="info-header">Fuel type</p>
             <p>Petrol</p><br>
         </div>
-        
+
         <div class="info-container">
             <p class="info-header">Petrol cost</p>
             <p id="costPerLitreOut">$-/L</p><br>
         </div>
-    
-    
+
+
     </div>
     <br>
 </div>
-        
-        
+
+
   <div id='map'></div>
 
 <script>
-  const start = document.getElementById("start");
-  const dest = document.getElementById("destination");
-  //const start = "Wellington, NZ";
-  //const dest = "Auckland, NZ";
-  const milage = document.getElementById("milage");
-  const output = document.getElementById("output");
-  const submit = document.getElementById("submit");
-
-  // Results
-  const estFuelCost = document.getElementById("estFuelCost");
-  const milageOut = document.getElementById("milageOut");
-  const tripDist = document.getElementById("tripDist");
-  const costPerLitreOut = document.getElementById("costPerLitreOut");
 
   let costPerLitre = 2.3;
   let distanceOld;
@@ -106,24 +93,44 @@
   var originIcon = 'https://chart.googleapis.com/chart?' +
       'chst=d_map_pin_letter&chld=O|FFFF00|000000';
 
-  function initMap() {
-    bounds = new google.maps.LatLngBounds
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -41.2865, lng: 174.7762},
-      zoom: 10
-    });
-    service = new google.maps.DistanceMatrixService;
-    geocoder = new google.maps.Geocoder;
-    directionsService = new google.maps.DirectionsService,
-    directionsDisplay = new google.maps.DirectionsRenderer({
-      map: map
-    })
-    var acOptions = {
-      componentRestrictions: {country: 'nz'}
-    };
-    acStart = new google.maps.places.Autocomplete(start,acOptions);
-    acDest = new google.maps.places.Autocomplete(dest,acOptions);
-  }
+function initMap() {
+  bounds = new google.maps.LatLngBounds
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -41.2865, lng: 174.7762},
+    zoom: 10
+  });
+  service = new google.maps.DistanceMatrixService;
+  geocoder = new google.maps.Geocoder;
+  directionsService = new google.maps.DirectionsService,
+  directionsDisplay = new google.maps.DirectionsRenderer({
+    map: map
+  })
+  var acOptions = {
+    componentRestrictions: {country: 'nz'}
+  };
+
+  const start = document.getElementById("start");
+  const dest = document.getElementById("destination");
+  acStart = new google.maps.places.Autocomplete(start,acOptions);
+  acDest = new google.maps.places.Autocomplete(dest,acOptions);
+}
+document.addEventListener("DOMContentLoaded", function(event) {
+
+    const start = document.getElementById("start");
+    const dest = document.getElementById("destination");
+    //const start = "Wellington, NZ";
+    //const dest = "Auckland, NZ";
+    const licencePlateTextField = document.getElementById("milage");
+    const output = document.getElementById("output");
+    const submit = document.getElementById("submit");
+
+    // Results
+    const estFuelCost = document.getElementById("estFuelCost");
+    const milageOut = document.getElementById("milageOut");
+    const tripDist = document.getElementById("tripDist");
+    const costPerLitreOut = document.getElementById("costPerLitreOut");
+
+    const carSizeSelect = document.getElementById("car_size");
 
   function deleteMarkers(markersArray) {
         for (var i = 0; i < markersArray.length; i++) {
@@ -132,9 +139,7 @@
         markersArray = [];
   }
 
-
-  function getDistance () {
-
+  function getDistance(callback) {
     service.getDistanceMatrix({
           origins: [start.value],
           destinations: [dest.value],
@@ -166,7 +171,6 @@
                 }
               };
             };
-
             for (var i = 0; i < originList.length; i++) {
               var results = response.rows[i].elements;
               geocoder.geocode({'address': originList[i]},
@@ -180,11 +184,13 @@
                 distanceText = results[j].distance.text;
               }
             }
-          }});
+          }
           calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
-          return distance;
+          callback(distance);
+        }
+      );
   }
-  
+
   function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
   directionsService.route({
     origin: pointA,
@@ -199,29 +205,25 @@
   });
 }
 
+function lookUpLicence(licence){
+  return fetch("/fuel/" + licence).then(res => res.json())
+}
 
-  function getCost(){
-     let litres = (getDistance() / 1000) / milage.value;
+
+  function getTotalCost(milage, distance){
+     let litres = (distance / 1000) / milage;
      console.log(setCostPerLitre());
      return (litres * setCostPerLitre()).toFixed(2);
   }
 
-  function setOutput() {
-    estFuelCost.innerHTML = "$" + getCost();
+  function setOutput(cost) {
+    estFuelCost.innerHTML = "$" + cost;
     tripDist.innerHTML = distanceText;
     milageOut.innerHTML = milage.value + " km/L";
     costPerLitreOut.innerHTML = "$" + costPerLitre + "/L";
 
   }
 
-  function waitDist() {
-    if (distance == distanceOld ) {
-      setTimeout(waitDist,50);
-    } else {
-      setOutput();
-      distanceOld = distance;
-    }
-  }
 
   function setCostPerLitre()
   {
@@ -241,15 +243,32 @@
 
 
   submit.onclick = () => {
-    getDistance();
-    getCost();
-    waitDist();
+    const licence = licencePlateTextField.value;
+    console.log(licence);
+
+    getDistance(function(distance) {
+      const licencePromise = licence ? lookUpLicence(licence) : Promise.resolve({});
+
+      licencePromise.then(function (carData){
+        console.log(carData);
+        let milage;
+        if (!carData.milage) {
+          milage = parseFloat(carSizeSelect.options[carSizeSelect.selectedIndex].value);
+        } else {
+          milage = carData.milage;
+        }
+        console.log('milage', milage)
+        const totalCost = getTotalCost(milage, distance)
+        console.log(totalCost);
+        setOutput(totalCost);
+      })
+    });
 
     //setCostPerLitre();
 
 
   };
-
+});
 </script>
 <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ_KrBDsSmofa4csc6YFAsxd8M3LHQyLg&libraries=places&callback=initMap">

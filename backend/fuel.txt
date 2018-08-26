@@ -1,0 +1,55 @@
+{
+    "status": "1",
+    "message": [],
+    "service": "fuel_label_generator",
+    "action": "get_text",
+    "ref_type": "plate",
+    "ref_value": "DHY249",
+    "print_option": "colour",
+    "data": {
+        "make": {
+            "label": "Make and model:",
+            "value": "MITSUBISHI TRITON DCAB GLS"
+        },
+        "rating": {
+            "label": "Star rating:",
+            "value": "3 &#189; stars out of 6 stars"
+        },
+        "cost": {
+            "label": "Yearly cost:",
+            "value": "3,000"
+        },
+        "milage": {
+            "label": "Milage:",
+            "value": "10.5 LITRES PER 100KM"
+        },
+        "ref": {
+            "label": "Reference:",
+            "value": "P:DHY249D:260818"
+        },
+        "note": {
+            "label": "Note:",
+            "value": "Cost per year based on price per litre of diesel $1.45 (plus Road User Charges) and an average distance of 14000 km"
+        },
+        "fuel_promo_badge": {
+            "label": "Badge:",
+            "value": "V3510-5.png?P=237220BD30E"
+        },
+        "fuel_stars_text": {
+            "label": "Star rating:",
+            "value": "3.5 stars out of 6"
+        },
+        "ann_fuel_cost_text": {
+            "label": "Milage statement:",
+            "value": "Annual fuel cost of $3,000"
+        },
+        "fuel_economy_text": {
+            "label": "Milage:",
+            "value": "10.5L per 100km"
+        },
+        "accreditation": {
+            "label": "Reference:",
+            "value": "reference.png?P=DHY249D_260818"
+        }
+    }
+}
