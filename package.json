@@ -1,0 +1,25 @@
+{
+  "name": "SoT-Roadie",
+  "version": "1.0.0",
+  "description": "Get the fuel cost",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinGinJunYang/SoT-Roadie.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinGinJunYang/SoT-Roadie/issues"
+  },
+  "homepage": "https://github.com/KevinGinJunYang/SoT-Roadie#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "request": "^2.88.0"
+  }
+}
