@@ -129,3 +129,19 @@ button {
     font-weight: 600;
     color: #318CB7;
 }
+
+@media only screen and (min-width: 768px) {
+
+    .container {
+        width: 30%;
+        height: 100vh;
+        position: fixed;
+    }
+
+    #map {
+        width: 70%;
+        float: right;
+        height: 100%;
+
+    }
+  }
