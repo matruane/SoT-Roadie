@@ -217,14 +217,15 @@ function lookUpLicence(licence){
 
 
   function getTotalCost(milage, distance){
-     let litres = (distance / 1000) / milage;
+    // distance/1000 = km, milage(L/100km) * km / 100 = cost
+     let litres = (distance / 1000) * milage / 100;
      return (litres * getCostPerLitre()).toFixed(2);
   }
 
   function setOutput(cost, milage) {
     estFuelCost.innerHTML = "$" + cost;
     tripDist.innerHTML = distanceText;
-    milageOut.innerHTML = milage + " km/L";
+    milageOut.innerHTML = milage + " L/100 km";
     costPerLitreOut.innerHTML = "$" + costPerLitre + "/L";
 
   }
